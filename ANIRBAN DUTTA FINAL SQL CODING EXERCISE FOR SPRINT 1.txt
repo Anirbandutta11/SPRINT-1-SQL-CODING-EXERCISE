@@ -1,0 +1,414 @@
+---Create and use database
+create database practice;
+use database practice;
+
+---Create and use warehouse
+create warehouse Ani;
+use warehouse Ani;
+
+---Location table
+create table public.Location
+(
+    LOC_ID int,
+    STREET_NO INT,
+    VILL_NAME VARCHAR(40),
+    CITY VARCHAR(30),
+    STATE VARCHAR(25),
+    COUNTRY VARCHAR(30)
+    );
+    create warehouse Ani;
+    use warehouse Ani;
+    insert into location values(1,100,'sht','kol','wes','ind');
+    insert into location values(2,110,'hjy','pur','odr','ban');
+    insert into location values(3,120,'jku','hyd','and','srl');
+    insert into location values(4,130,'ght','pun','mah','nep');
+    insert into location values(5,140,'sdr','agr','tri','bhu');
+ 
+ select * from location;
+
+alter table location
+modify loc_id not null;
+
+alter table location
+modify city not null;
+
+alter table location
+modify state not null;
+
+alter table location
+modify country not null;
+
+ ---Employee table
+    create table public.Employee
+(
+    EMPLOYEE_ID int,
+    EMP_NAME VARCHAR(30),
+    DEPT_ID INT,
+    JOINING_DT DATE,
+    DOB DATE,
+    YRS_OF_EXP NUMERIC,
+    PHONE_NUMB INT,
+    MARITAL_STATUS BOOLEAN,
+    JOB_ID INT,
+    SALARY DECIMAL(8,2),
+    MANAGER_ID INT
+    );
+
+    insert into employee values(500,'Ag',200,'4-oct-2022','11-nov-1999',10,0123456789,True,10,50000,300);
+    insert into employee values(510,'Bi',220,'5-nov-2022','10-oct-1998',5,1234567890,False,20,40000,310);
+    insert into employee values(520,'An',230,'6-dec-2022','9-sep-1997',4,2345678910,True,30,30000,320);
+    insert into employee values(530,'Sa',240,'7-jan-2023','8-aug-1996',3,3456789210,False,40,20000,330);
+    insert into employee values(540,'Sh',250,'8-feb-2023','7-jul-1995',2,5678912340,True,50,10000,340);
+    
+    select * from employee;
+
+alter table employee
+modify employee_id not null;
+
+alter table employee
+modify emp_name not null;
+
+alter table employee
+modify dept_id not null;
+
+alter table employee
+modify job_id not null;
+
+alter table employee
+modify salary not null;
+
+alter table employee
+modify manager_id not null;
+
+---Jobs table
+ create table public.Jobs
+(
+    JOB_ID int,
+    JOB_TITLE VARCHAR(30)
+    );
+
+    insert into jobs values(10,'Sr.Analyst');
+    insert into jobs values(20,'Analyst');
+    insert into jobs values(30,'Hr');
+    insert into jobs values(40,'Manager');
+    insert into jobs values(50,'Staff');
+ 
+ select * from jobs;
+
+alter table jobs
+modify job_id not null;
+
+alter table jobs
+modify job_title not null;
+
+---Department table
+ create table public.Department
+(
+    DEPT_ID int,
+    DEPT_NAME VARCHAR(30),
+    LOC_ID INT,
+    DEPT_HEAD VARCHAR(30)
+    );
+
+    insert into department values(200,'che',1,'Ani');
+    insert into department values(220,'mech',2,'Suk');
+    insert into department values(230,'prod',3,'Sri');
+    insert into department values(240,'civ',4,'Ree');
+    insert into department values(250,'comp',5,'Sam');
+
+select * from department;
+
+alter table department
+modify dept_id not null;
+
+alter table department
+modify dept_head not null;
+
+---Dependents table
+create table public.Dependents
+(
+    DEP_ID int,
+    DEP_NAME VARCHAR(30),
+    RELATIONSHIP VARCHAR(25),
+    EMPLOYEE_ID INT
+    );
+
+    insert into dependents values(300,'Kou','Man',500);
+    insert into dependents values(310,'Jay','Man',510);
+    insert into dependents values(320,'Gou','Man',520);
+    insert into dependents values(330,'Shu','Man',530);
+    insert into dependents values(340,'Hal','Man',540);
+    
+    select * from dependents;
+
+alter table dependents
+modify dep_id not null;
+
+alter table dependents
+modify dep_name not null;
+
+alter table dependents
+modify relationship not null;
+
+alter table dependents
+modify employee_id not null;
+
+alter table location
+add constraint location_pk primary key(loc_id);
+
+alter table jobs
+add constraint jobs_pk primary key(job_id);
+
+alter table department
+add constraint department_pk primary key(dept_id);
+
+alter table dependents
+add constraint dependents_pk primary key(dep_id);
+
+alter table employee
+add constraint employee_pk primary key(employee_id);
+
+alter table employee
+add constraint employee_department_fk foreign key(dept_id) references department(dept_id);
+
+alter table employee
+add constraint employee_jobs_fk foreign key(job_id) references jobs(job_id);
+
+alter table employee
+add constraint employee_dependents_fk foreign key(manager_id) references dependents(dep_id);
+
+alter table employee
+drop constraint employee_dependents_fk;
+
+alter table department
+add constraint department_location_fk foreign key(loc_id) references location(loc_id);
+
+alter table dependents
+add constraint dependents_employee_fk foreign key(employee_id) references employee(employee_id);
+
+desc table employee;
+desc table location;
+desc table jobs;
+desc table department;
+desc table dependents;
+
+2.1 Select statements
+---2.1.1 Write a query to display employee id, employee name, department id, department name of all employees who has a department assigned?
+select e.employee_id,e.emp_name,e.dept_id,d.dept_name from employee e,department d 
+where e.dept_id=d.dept_id;
+
+---2.1.2 Write query to display employee name with monthly salary?
+select emp_name,salary from employee;
+
+2.2 Where condition
+---2.2.1. Write a query to display employee details with salary less than 5 lakhs?
+select * from employee 
+where salary <5000000;
+
+---2.2.2 Write a query to display the employee id, employee name of the employees who joined before 2015?
+select employee_id,emp_name from employee
+where joining_dt<'2015-01-01';
+
+---2.2.3 Write a query to display the employee name, salary and manager ID, for those employees whose managers hold the ID 100, 120, 145, 149?
+update employee
+set manager_id=100
+where employee_id=500;
+
+update employee
+set manager_id=120
+where employee_id=510;
+
+update employee
+set manager_id=145
+where employee_id=520;
+
+update employee
+set manager_id=149
+where employee_id=530;
+
+select emp_name,salary,manager_id from employee where manager_id>99 and  manager_id<150;
+
+---2.2.4 Write a query to display all employee names to begin with ‘R’?
+update employee
+set emp_name='Rin'
+where employee_id=530;
+
+select emp_name from employee
+where emp_name like 'R%';
+
+---2.2.5 Write an SQL query to fetch the list of employees with the same salary?
+update employee
+set salary=40000
+where employee_id=530;
+
+select e1.emp_name,e2.emp_name,e1.salary,e2.salary from employee e1 inner join employee e2 
+on e1.salary=e2.salary and e1.emp_name<>e2.emp_name
+                                                                                     OR
+select e1.emp_name,e2.emp_name,e1.salary,e2.salary from employee e1,employee e2 
+where e1.salary=e2.salary and e1.emp_name<>e2.emp_name
+
+---2.2.6 Write a query to retrieve all the employees who are working in Finance, Manufacturing, and Construction departments?
+update department
+set dept_name='Finance'
+where dept_id=220;
+
+select * from department;
+
+update department
+set dept_name='Manufacturing'
+where dept_id=230;
+
+update department
+set dept_name='Construction'
+where dept_id=240;
+
+select * from employee e where e.dept_id in (select d.dept_id from department d where d.dept_name in('Finance','Manufacturing','Construction'));
+
+2.3 Group By, Order By and Having Conditions
+---2.3.1 Write a query to display number of employees in each department and group by department?
+select d.dept_id,count(employee_id) from employee e,department d
+where e.dept_id=d.dept_id
+group by d.dept_id;
+
+---2.3.2. Write query to fetch employee name, department number of all employees in departments 20 or 50 in ascending alphabetical and order by name?
+select e.emp_name,d.dept_id,d.dept_name from employee e , department d
+where e.dept_id=d.dept_id and d.dept_id in (230,250)
+order by d.dept_name asc,e.emp_name ;
+
+---2.3.3 Write a query to Display the employee name, department number, and department name for each employee order by employee name?
+select e.emp_name,d.dept_id,d.dept_name from employee e, department d
+where e.dept_id=d.dept_id
+order by e.emp_name;
+
+---2.3.4 Write a query to get the employee name, department id, years of experience for unmarried employees group by experience and order by department id?
+select emp_name,dept_id,yrs_of_exp from employee
+where marital_status='false'
+group by yrs_of_exp,emp_name,dept_id
+order by dept_id;
+
+2.4 Joins
+---2.4.1 Write a query to get employee name, employee id, department name who belongs to state ANDHRA PRADESH use left join?
+update location
+set state = 'andhra_pradesh'
+where loc_id=3;
+
+select e.emp_name,e.employee_id,d.dept_name from employee e left outer join department d on
+e.dept_id=d.dept_id where d.loc_id=(select loc_id from location where state='andhra_pradesh');
+
+---2.4.2 Write query to find employee name, salary and job title for all employees use right join?
+select e.emp_name,e.salary,j.job_title from employee e right outer join jobs j on
+e.job_id=j.job_id;
+
+---2.4.3 Write a query to get number of employees with same job title use inner join?
+update jobs
+set job_title='Sr.Analyst'
+where job_id=20;
+
+select j.job_title,count(e.employee_id) from employee e inner join jobs j on e.job_id=j.job_id  
+group by j.job_title;
+
+---2.4.4 Write q query to get employee name, department name, state who are unmarried use full join?
+select e.emp_name,d.dept_name,l.state from employee e full outer join department d on e.dept_id = d.dept_id
+full outer join location l on d.loc_id = l.loc_id where e.marital_status = 'false';
+
+2.5 Aggregations
+---2.5.1 Write a query to get difference between highest and lowest salaries and label the column difference?
+select ((select max(salary) from employee) - (select min(salary) from employee)) as Difference;
+
+---2.5.2 Write a query to display employees who earn more than the average salary and who work in the IT department?
+update department
+set dept_name='IT'
+where dept_id=250;
+
+select emp_name from employee where dept_id=(select dept_id from department where dept_name='IT') and salary>(select avg(salary) from employee);
+
+---2.5.3 Write a query to display what is the average, maximum and minimum salary for each department?
+select dept_id, avg(salary),max(salary),min(salary) from employee e
+group by dept_id;
+
+2.6 SQL Functions
+---2.6.1 Write an SQL query to print the first three characters of EMPLOYEE NAME?
+select substr(emp_name,1,3) from employee;
+
+---2.6.2  Write a query to print employee name ends with ‘h’ and contains six alphabets?
+update employee
+set emp_name='Agnivh'
+where employee_id=500;
+
+select emp_name from employee
+where emp_name like '%h'and length(emp_name)=6;
+
+---2.6.3 Write a query to get age from date of birth in employee table?
+select ((current_date - dob)/365) as age from employee;
+
+---2.6.4 Write a query to convert employee into lower case and find the length of the employee name?
+select lower(emp_name),length(emp_name) from employee;
+
+---2.6.5  Write a query to add current date as date to the employee table?
+alter table employee
+add date date;
+
+update employee
+set date = current_date;
+
+select date from employee;
+
+---2.6.6 Write a query to convert decimal type to integer for salary column in employee table?
+select round(salary) from employee;
+
+---2.6.7 Write a query to format joining date to format YYYY-MM-DD ?
+select to_char(joining_dt,'yyyy-mm-dd') as formatted_date from employee;
+
+2.7  Index and view
+---2.7.1 Write a query to create a view that shows employee name, phone number, Manager id from employees table who are from city = Bangalore?
+update location
+set city ='bangalore'
+where loc_id=5;
+
+create view employee_bangalore as (select e.emp_name,e.phone_numb,e.manager_id from employee e inner join department d on e.dept_id=d.dept_id 
+inner join location l on d.loc_id=l.loc_id where l.city='bangalore');
+
+select * from employee_bangalore;
+
+---2.7.2 Write a query to create an index on employee table with employee name, DOB and martial status?
+create index employee_idx on employee(emp_name,dob,marital_status);
+
+2.8 Sub Queries
+---2.8.1 Write a query to fetch all the employee details who do not have location Id 2546?
+update location
+set loc_id = 2546
+where street_no = 110;
+
+select * from employee e inner join department d on e.dept_id=d.dept_id 
+inner join location l on d.loc_id=l.loc_id where l.loc_id <> 2546;
+
+---2.8.2 Write a query to fetch employee details whose salaries are greater than the average salary of all the employees?
+select * from employee where salary>(select avg(salary) from employee);
+
+---2.8.3 Write a query to find all the departments do not have any employee with salary greater than 2.5 lakhs?
+update employee
+set salary=250001
+where employee_id=500;
+
+select dept_id from department where dept_id in (select dept_id from employee where salary<250000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+ 
+    
+ 
